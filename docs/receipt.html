@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>SAMN Official Receipt</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<style>
+:root{--navy:#172d4f;--gold:#d4aa55;--cream:#fbf6e9}
+*{box-sizing:border-box}
+body{margin:0;background:#eef1f3;font-family:Georgia,"Times New Roman",serif;color:var(--navy)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:14px 20px;background:#fff;border-bottom:1px solid #dce3e6;font-family:Arial,sans-serif}
+.bar button,.bar a{padding:10px 16px;border:0;border-radius:8px;background:var(--navy);color:#fff;font-weight:700;cursor:pointer;text-decoration:none;font-size:13.33px}
+.bar a.alt{background:#e8eef0;color:var(--navy);border:1px solid #dce3e6}
+.bar span{color:#64717b;font-size:14px}
+#msg{padding:30px;text-align:center;font-family:Arial,sans-serif}
+.receipt{width:210mm;max-width:96vw;margin:24px auto;background:var(--cream);border:8px solid var(--navy);outline:2px solid var(--gold);outline-offset:-16px;padding:12mm 14mm;min-height:140mm}
+.head{display:flex;align-items:center;gap:16px;border-bottom:2px solid var(--gold);padding-bottom:12px}
+.head img{width:78px;height:78px;object-fit:contain}
+.head h1{margin:0;font-size:22px;letter-spacing:.1em}
+.head p{margin:2px 0 0;font-size:12.5px;color:#4a5a6a;font-family:Arial,sans-serif}
+.title{display:flex;justify-content:space-between;align-items:baseline;margin:16px 0 6px;flex-wrap:wrap;gap:6px}
+.title h2{margin:0;font-size:20px;letter-spacing:.08em}
+.title .no{font-family:Arial,sans-serif;font-size:14px}
+table{width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;margin-top:8px}
+td{padding:9px 6px;border-bottom:1px solid #e3d9bd;vertical-align:top}
+td:first-child{width:38%;color:#5b6b78}
+td:last-child{font-weight:700}
+.amount{margin:18px 0 8px;padding:12px 16px;background:var(--navy);color:#fff;display:flex;justify-content:space-between;align-items:center;font-family:Arial,sans-serif;border-radius:6px}
+.amount b{font-size:24px;color:var(--gold)}
+.note{font-family:Arial,sans-serif;font-size:12px;line-height:1.5;color:#4a5a6a;margin-top:12px}
+.issued{margin-top:22px;font-family:Arial,sans-serif;font-size:13px}
+.foot{margin-top:18px;border-top:1px solid var(--gold);padding-top:8px;text-align:center;font-family:Arial,sans-serif;font-size:11.5px;color:#5b6b78}
+@media print{.bar,#msg{display:none}body{background:#fff}.receipt{margin:0;width:100%;max-width:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{size:A4 portrait;margin:8mm}}
+</style>
+</head>
+<body>
+<div class="bar"><button onclick="window.print()">Print / Save as PDF</button><a class="alt" id="mail" href="#" hidden>Email to member</a><span>Choose “Save as PDF” as the printer to send it digitally.</span></div>
+<div id="msg">Loading…</div>
+<div class="receipt" id="r" hidden>
+  <div class="head"><img src="assets/samn-logo-main.png" alt="SAMN logo"><div><h1>SOUTHERN AFRICA MUSLIMAH NETWORK</h1><p>Sandlane &amp; Devilliers Street, Cathedral Building, Manzini, Eswatini · P.O. Box 195, Matsapha M200, Eswatini</p></div></div>
+  <div class="title"><h2>OFFICIAL RECEIPT</h2><div class="no">Receipt no: <b id="no"></b></div></div>
+  <table>
+    <tr><td>Received from</td><td id="name"></td></tr>
+    <tr><td>Membership ID</td><td id="mid"></td></tr>
+    <tr><td>Country branch</td><td id="country"></td></tr>
+    <tr><td>Being payment for</td><td>Membership fee: Regular Member (Ambassador)</td></tr>
+    <tr><td>Payment method</td><td id="method"></td></tr>
+    <tr><td>Payment reference</td><td id="ref"></td></tr>
+    <tr><td>Date received</td><td id="date"></td></tr>
+  </table>
+  <div class="amount"><span>AMOUNT RECEIVED</span><b id="amt"></b></div>
+  <p class="note" id="status-note"></p>
+  <div class="issued">Issued by: <b id="by"></b> on <span id="issued"></span></div>
+  <div class="foot">southernafricamuslimahnetwork@gmail.com · +26876282672<br>This is a computer-generated receipt and is valid without a signature. Thank you for your support.</div>
+</div>
+<script>
+const C={BW:"Botswana",LS:"Lesotho",MW:"Malawi",MZ:"Mozambique",NA:"Namibia",ZA:"South Africa",SZ:"Eswatini",TZ:"Tanzania",ZM:"Zambia",ZW:"Zimbabwe",KE:"Kenya",OTHER:"Continental Secretariat"};
+const $=i=>document.getElementById(i);
+const fmtDate=d=>new Date(d).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"});
+(async()=>{
+ const id=new URLSearchParams(location.search).get("id");
+ const cfg=window.SAMN_CONFIG||{};
+ if(!id||!window.supabase){$("msg").textContent="Open this page from the officer dashboard.";return}
+ const db=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY);
+ const {data:{session}}=await db.auth.getSession();
+ if(!session){$("msg").textContent="Please sign in on the officer dashboard first.";return}
+ const {data,error}=await db.from("membership_applications").select("full_name,email,country_code,member_number,status,receipt_number,payment_amount,payment_method,payment_reference,payment_received_on,payment_recorded_by_name,payment_recorded_at").eq("id",id).maybeSingle();
+ if(error||!data||!data.receipt_number){$("msg").textContent="No receipt has been issued for this application, or you do not have access to it.";return}
+ $("no").textContent=data.receipt_number;
+ $("name").textContent=data.full_name;
+ $("mid").textContent=data.member_number||"To be issued on approval";
+ $("country").textContent=C[data.country_code]||data.country_code;
+ $("method").textContent=data.payment_method;
+ $("ref").textContent=data.payment_reference||"Not supplied";
+ $("date").textContent=fmtDate(data.payment_received_on);
+ $("amt").textContent="R "+Number(data.payment_amount).toLocaleString("en-ZA",{minimumFractionDigits:2,maximumFractionDigits:2});
+ $("by").textContent=data.payment_recorded_by_name||"SAMN officer";
+ $("issued").textContent=fmtDate(data.payment_recorded_at);
+ $("status-note").textContent=data.status==="approved"
+   ? "This receipt acknowledges payment of the membership fee. The member’s application has been approved."
+   : "This receipt acknowledges payment only. Membership takes effect once the application is approved by SAMN.";
+ if(data.email){const m=$("mail");m.hidden=false;m.href="mailto:"+encodeURIComponent(data.email).replace("%40","@")+"?subject="+encodeURIComponent("SAMN payment receipt "+data.receipt_number)+"&body="+encodeURIComponent("Assalamu alaikum "+data.full_name+",\n\nThank you for your payment. Please find your SAMN receipt "+data.receipt_number+" attached.\n\nSAMN Secretariat");}
+ $("msg").hidden=true;$("r").hidden=false;
+})();
+</script>
+</body>
+</html>

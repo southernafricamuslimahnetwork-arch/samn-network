@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex, nofollow"><title>SAMN Officer Dashboard</title><link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script><script defer src="js/admin.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><img src="assets/samn-logo.jpeg" alt="SAMN logo" onerror="this.style.display='none'"><span><strong>SAMN</strong><small>Officer dashboard</small></span></a>
+    <nav><a href="index.html">Home</a><a href="membership.html">Membership form</a></nav>
+  </header>
+  <main class="container">
+    <section class="hero"><p class="eyebrow">Restricted access</p><h1>Membership administration</h1><p>For authorised continental and country branch officers only.</p></section>
+    <section id="login-panel" class="panel">
+      <h2>Officer sign in</h2>
+      <form id="login-form">
+        <label>Email address<input name="email" type="email" autocomplete="username" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="button" type="submit">Sign in</button><p id="login-status" class="status" role="status"></p>
+      </form>
+      <p class="muted small">Officer accounts must be created by an authorised administrator in Supabase. Public self-registration is disabled.</p>
+    </section>
+    <section id="dashboard" class="panel hidden">
+      <div class="dashboard-head"><div><h2>Applications</h2><p id="officer-info" class="muted"></p></div><button id="logout" class="button button-secondary">Sign out</button></div>
+      <div class="toolbar"><label class="filter-label">Status <select id="status-filter"><option value="pending">Pending (awaiting endorsement)</option><option value="endorsed">Endorsed (awaiting final approval)</option><option value="all">All</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select></label><button id="refresh" class="button button-secondary">Refresh</button></div>
+      <p id="dashboard-status" class="status" role="status"></p>
+      <div id="applications" class="application-list"></div>
+      <p class="small muted">Country officers see and endorse applications for their assigned country only. Final approval, and the member number, is given by continental administrators on behalf of the Executive Committee.</p>
+    </section>
+  </main>
+  <dialog id="payment-dialog" class="pay-dialog">
+    <form id="payment-form">
+      <h3>Record payment &amp; issue receipt</h3>
+      <p id="payment-for" class="muted small"></p>
+      <label>Amount received (R) <span>*</span><input name="amount" type="number" min="1" max="100000" step="0.01" value="300.00" required></label>
+      <label>Payment method <span>*</span>
+        <select name="method" required>
+          <option>Direct bank transfer</option><option>EFT / Mobile money</option><option>Online payment portal</option><option>Cash (branch treasurer)</option>
+        </select>
+      </label>
+      <label>Date received <span>*</span><input name="received_on" type="date" required></label>
+      <label>Bank / payment reference<input name="reference" maxlength="80"></label>
+      <p id="payment-status" class="status" role="status"></p>
+      <div class="card-actions"><button class="button" type="submit">Issue receipt</button><button class="button button-secondary" type="button" id="payment-cancel">Cancel</button></div>
+    </form>
+  </dialog>
+  <footer>© <span id="year"></span> Southern Africa Muslimah Network (SAMN)</footer>
+</body>
+</html>
