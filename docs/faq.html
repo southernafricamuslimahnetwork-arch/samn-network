@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FAQ – SAMN</title>
+  <!-- Use the same stylesheet and header markup as your other pages (path assumed) -->
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .faq details { border: 1px solid #d9dee5; border-radius: 10px; padding: 0 1rem; margin: .6rem 0; background: #fff; }
+    .faq summary { cursor: pointer; font-weight: 700; padding: .9rem 0; }
+    .faq details p { margin: 0 0 1rem; }
+    .msg-form label { display: block; font-weight: 600; margin-top: .8rem; }
+    .msg-form input, .msg-form textarea { width: 100%; max-width: 36rem; padding: .6rem; border: 1px solid #c5ccd6; border-radius: 8px; font: inherit; }
+  </style>
+</head>
+<body>
+  <!-- Paste your normal site header here and add: <a href="faq.html">FAQ</a> -->
+  <main class="faq" style="max-width:48rem;margin:2rem auto;padding:0 1rem">
+    <h1>Frequently asked questions</h1>
+
+    <!-- Edit these answers so they match SAMN policy -->
+    <details><summary>How much does membership cost?</summary>
+      <p>The joining fee is shown on the membership form. Renewal is R100 per year.</p></details>
+    <details><summary>How do I renew my membership?</summary>
+      <p>Open the <a href="renewal.html">renewal form</a>, enter your member number and the email you joined with, pay R100 and upload your proof of payment. An officer confirms the payment and extends your membership by 12 months.</p></details>
+    <details><summary>How do I pay and show proof of payment?</summary>
+      <p>Pay using the details on the form, then upload a photo or PDF of the receipt or bank slip.</p></details>
+    <details><summary>What happens after I apply?</summary>
+      <p>Your branch officer confirms payment and endorses the application, then the continental administrators give final approval. You receive your member number afterwards.</p></details>
+    <details><summary>I lost my member number. What do I do?</summary>
+      <p>Send us a message below with your full name and the email you applied with.</p></details>
+
+    <h2>Still have a question?</h2>
+    <form id="msg-form" class="msg-form">
+      <label for="m-name">Your name</label><input id="m-name" name="name" required maxlength="120">
+      <label for="m-email">Email</label><input id="m-email" name="email" type="email" required maxlength="200">
+      <label for="m-country">Country code (optional, e.g. SZ)</label><input id="m-country" name="country" maxlength="3">
+      <label for="m-text">Message</label><textarea id="m-text" name="message" rows="5" required maxlength="2000"></textarea>
+      <p><button class="button" type="submit">Send message</button></p>
+      <p id="msg-status" class="status" role="status"></p>
+    </form>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script>
+    const cfg = window.SAMN_CONFIG || {};
+    const client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+    const status = document.getElementById("msg-status");
+    document.getElementById("msg-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const f = e.currentTarget, btn = f.querySelector("button");
+      btn.disabled = true; status.textContent = "Sending…"; status.className = "status";
+      const { error } = await client.rpc("samn_submit_message", {
+        p_name: f.name.value, p_email: f.email.value,
+        p_country: f.country.value.toUpperCase(), p_message: f.message.value
+      });
+      btn.disabled = false;
+      if (error) { status.textContent = "Could not send your message. Please try again."; status.className = "status error"; return; }
+      f.reset(); status.textContent = "Thank you. The Secretariat will reply by email."; status.className = "status success";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Renew membership – SAMN</title>
+  <!-- Use the same stylesheet and header markup as your other pages (path assumed) -->
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .renew label { display: block; font-weight: 600; margin-top: .8rem; }
+    .renew input { width: 100%; max-width: 30rem; padding: .6rem; border: 1px solid #c5ccd6; border-radius: 8px; font: inherit; }
+    .fee { display: inline-block; padding: .5rem 1rem; border-radius: 8px; background: #fdf3d0; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <!-- Paste your normal site header here -->
+  <main class="renew" style="max-width:40rem;margin:2rem auto;padding:0 1rem">
+    <h1>Renew your membership</h1>
+    <p class="fee">Annual renewal fee: R100</p>
+    <p>Enter the member number and email from your membership. Pay R100 using the payment details on the membership form, then upload your proof of payment.</p>
+    <form id="renew-form">
+      <label for="r-number">Member number</label><input id="r-number" name="member_number" required>
+      <label for="r-email">Email used when you joined</label><input id="r-email" name="email" type="email" required>
+      <label for="r-proof">Proof of payment (photo or PDF, max 5 MB)</label>
+      <input id="r-proof" name="proof" type="file" accept="image/*,.pdf" required>
+      <p><button class="button" type="submit">Submit renewal</button></p>
+      <p id="r-status" class="status" role="status"></p>
+    </form>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script>
+    const cfg = window.SAMN_CONFIG || {};
+    const client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+    const status = document.getElementById("r-status");
+    function say(msg, type = "") { status.textContent = msg; status.className = "status" + (type ? " " + type : ""); }
+
+    document.getElementById("renew-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const f = e.currentTarget, btn = f.querySelector("button"), file = f.proof.files[0];
+      if (!file || file.size > 5 * 1024 * 1024) { say("Please choose a proof of payment under 5 MB.", "error"); return; }
+      btn.disabled = true; say("Submitting…");
+
+      // Match the upload path your membership form uses if your storage policies expect a specific prefix.
+      const ext = (file.name.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const path = `renewals/${crypto.randomUUID()}.${ext}`;
+      const up = await client.storage.from("payment-proofs").upload(path, file, { contentType: file.type });
+      if (up.error) { btn.disabled = false; say("Could not upload your proof of payment. Please try again.", "error"); return; }
+
+      const { error } = await client.rpc("samn_submit_renewal", {
+        p_member_number: f.member_number.value, p_email: f.email.value, p_proof_path: path
+      });
+      btn.disabled = false;
+      if (error) {
+        const pending = String(error.message).includes("already pending");
+        say(pending ? "A renewal for this member is already waiting for review."
+                    : "We could not match that member number and email. Check your details or contact the Secretariat.", "error");
+        return;
+      }
+      f.reset(); say("Renewal submitted. An officer will confirm your payment and issue a receipt.", "success");
+    });
+  </script>
+</body>
+</html>
