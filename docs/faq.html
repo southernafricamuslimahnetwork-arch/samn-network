@@ -1,65 +1,81 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FAQ – SAMN</title>
-  <!-- Use the same stylesheet and header markup as your other pages (path assumed) -->
-  <link rel="stylesheet" href="css/styles.css">
-  <style>
-    .faq details { border: 1px solid #d9dee5; border-radius: 10px; padding: 0 1rem; margin: .6rem 0; background: #fff; }
-    .faq summary { cursor: pointer; font-weight: 700; padding: .9rem 0; }
-    .faq details p { margin: 0 0 1rem; }
-    .msg-form label { display: block; font-weight: 600; margin-top: .8rem; }
-    .msg-form input, .msg-form textarea { width: 100%; max-width: 36rem; padding: .6rem; border: 1px solid #c5ccd6; border-radius: 8px; font: inherit; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ | SAMN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--navy:#142d50;--navy2:#203f68;--gold:#c8a45d;--gold-pale:#f4ecd9;--ink:#243247;--muted:#64748b;--paper:#fbfaf7;--line:#e2e8f0}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.6}
+a{color:inherit;text-decoration:none}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.nav{width:min(1160px,92%);margin:auto;min-height:82px;display:flex;align-items:center;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;padding:8px 0}
+.brand{display:flex;align-items:center;gap:13px;color:var(--navy);font-weight:800;letter-spacing:.04em}
+.brand small{display:block;font-weight:500;letter-spacing:0;color:var(--muted)}
+.logo{width:58px;height:58px;object-fit:contain;border-radius:50%;background:#fff}
+nav{display:flex;align-items:center;gap:8px 22px;flex-wrap:wrap;font-weight:600;color:var(--navy)}
+nav a:hover{color:var(--gold)}
+.nav-cta{background:var(--navy);color:#fff;padding:14px 26px;border-radius:12px;font-weight:700}
+.nav-cta:hover{color:#fff;background:var(--navy2)}
+main{width:min(46rem,92%);margin:3rem auto 4rem}
+h1{color:var(--navy);font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.15;margin:0 0 1rem}
+h2{color:var(--navy);margin-top:2.5rem}
+label{display:block;font-weight:600;margin-top:1rem;color:var(--navy)}
+input,textarea{width:100%;padding:.7rem .8rem;border:1px solid #c5ccd6;border-radius:10px;font:inherit;background:#fff;margin-top:.3rem}
+input:focus,textarea:focus,summary:focus-visible{outline:3px solid var(--gold-pale);border-color:var(--gold)}
+.button{background:var(--gold);color:var(--navy);border:0;border-radius:10px;padding:.85rem 1.6rem;font:inherit;font-weight:700;cursor:pointer}
+.button:disabled{opacity:.6;cursor:wait}
+.fee{display:inline-block;padding:.5rem 1rem;border-radius:10px;background:var(--gold-pale);color:var(--navy);font-weight:700}
+details{border:1px solid var(--line);border-radius:12px;padding:0 1.1rem;margin:.7rem 0;background:#fff}
+summary{cursor:pointer;font-weight:700;color:var(--navy);padding:1rem 0}
+details p{margin:0 0 1rem;color:var(--ink)}details a{color:var(--navy);text-decoration:underline}
+.status{min-height:1.5rem;font-weight:600}.status.error{color:#b42318}.status.success{color:#067647}
+footer{border-top:1px solid var(--line);padding:1.5rem 0;text-align:center;color:var(--muted);font-size:.9rem}
+</style>
 </head>
 <body>
-  <!-- Paste your normal site header here and add: <a href="faq.html">FAQ</a> -->
-  <main class="faq" style="max-width:48rem;margin:2rem auto;padding:0 1rem">
-    <h1>Frequently asked questions</h1>
-
-    <!-- Edit these answers so they match SAMN policy -->
-    <details><summary>How much does membership cost?</summary>
-      <p>The joining fee is shown on the membership form. Renewal is R100 per year.</p></details>
-    <details><summary>How do I renew my membership?</summary>
-      <p>Open the <a href="renewal.html">renewal form</a>, enter your member number and the email you joined with, pay R100 and upload your proof of payment. An officer confirms the payment and extends your membership by 12 months.</p></details>
-    <details><summary>How do I pay and show proof of payment?</summary>
-      <p>Pay using the details on the form, then upload a photo or PDF of the receipt or bank slip.</p></details>
-    <details><summary>What happens after I apply?</summary>
-      <p>Your branch officer confirms payment and endorses the application, then the continental administrators give final approval. You receive your member number afterwards.</p></details>
-    <details><summary>I lost my member number. What do I do?</summary>
-      <p>Send us a message below with your full name and the email you applied with.</p></details>
-
-    <h2>Still have a question?</h2>
-    <form id="msg-form" class="msg-form">
-      <label for="m-name">Your name</label><input id="m-name" name="name" required maxlength="120">
-      <label for="m-email">Email</label><input id="m-email" name="email" type="email" required maxlength="200">
-      <label for="m-country">Country code (optional, e.g. SZ)</label><input id="m-country" name="country" maxlength="3">
-      <label for="m-text">Message</label><textarea id="m-text" name="message" rows="5" required maxlength="2000"></textarea>
-      <p><button class="button" type="submit">Send message</button></p>
-      <p id="msg-status" class="status" role="status"></p>
-    </form>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-  <script src="js/config.js"></script>
-  <script>
-    const cfg = window.SAMN_CONFIG || {};
-    const client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
-    const status = document.getElementById("msg-status");
-    document.getElementById("msg-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const f = e.currentTarget, btn = f.querySelector("button");
-      btn.disabled = true; status.textContent = "Sending…"; status.className = "status";
-      const { error } = await client.rpc("samn_submit_message", {
-        p_name: f.name.value, p_email: f.email.value,
-        p_country: f.country.value.toUpperCase(), p_message: f.message.value
-      });
-      btn.disabled = false;
-      if (error) { status.textContent = "Could not send your message. Please try again."; status.className = "status error"; return; }
-      f.reset(); status.textContent = "Thank you. The Secretariat will reply by email."; status.className = "status success";
-    });
-  </script>
+<header><div class="nav">
+  <a class="brand" href="index.html"><img class="logo" src="assets/samn-logo.png" alt="SAMN logo" onerror="this.style.display='none'"><span>SAMN<small>Southern Africa Muslimah Network</small></span></a>
+  <nav><a href="index.html#about">About</a><a href="index.html#objectives">Our Objectives</a><a href="index.html#learning">Knowledge Centre</a><a href="index.html#posters">Posters</a><a href="index.html#governance">Governance</a><a href="index.html#contact">Contact</a><a href="faq.html">FAQ</a><a href="renewal.html">Renew</a><a class="nav-cta" href="membership.html">Membership &#8599;</a></nav>
+</div></header>
+<main>
+<h1>Frequently asked questions</h1>
+<details><summary>How much does membership cost?</summary><p>The joining fee is shown on the <a href="membership.html">membership form</a>. Renewal is R100 per year.</p></details>
+<details><summary>How do I renew my membership?</summary><p>Open the <a href="renewal.html">renewal form</a>, enter your member number and the email you joined with, pay R100 and upload your proof of payment. An officer confirms the payment and extends your membership by 12 months.</p></details>
+<details><summary>How do I pay and show proof of payment?</summary><p>Pay using the details on the form, then upload a photo or PDF of the receipt or bank slip.</p></details>
+<details><summary>What happens after I apply?</summary><p>Your branch officer confirms payment and endorses the application, then the continental administrators give final approval. You receive your member number afterwards.</p></details>
+<details><summary>I lost my member number. What do I do?</summary><p>Send us a message below with your full name and the email you applied with.</p></details>
+<h2>Still have a question?</h2>
+<form id="msg-form">
+  <label for="m-name">Your name</label><input id="m-name" name="name" required maxlength="120">
+  <label for="m-email">Email</label><input id="m-email" name="email" type="email" required maxlength="200">
+  <label for="m-country">Country code (optional, e.g. SZ)</label><input id="m-country" name="country" maxlength="3">
+  <label for="m-text">Message</label><textarea id="m-text" name="message" rows="5" required maxlength="2000"></textarea>
+  <p><button class="button" type="submit">Send message</button></p>
+  <p id="msg-status" class="status" role="status"></p>
+</form>
+</main>
+<footer>&copy; <span id="year"></span> Southern Africa Muslimah Network</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+const cfg = window.SAMN_CONFIG || {};
+const client = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+const box = document.getElementById("msg-status");
+document.getElementById("msg-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const f = e.currentTarget, btn = f.querySelector("button");
+  btn.disabled = true; box.textContent = "Sending…"; box.className = "status";
+  const { error } = await client.rpc("samn_submit_message", {
+    p_name: f.name.value, p_email: f.email.value,
+    p_country: f.country.value.toUpperCase(), p_message: f.message.value
+  });
+  btn.disabled = false;
+  if (error) { box.textContent = "Could not send your message. Please try again."; box.className = "status error"; return; }
+  f.reset(); box.textContent = "Thank you. The Secretariat will reply by email."; box.className = "status success";
+});
+</script>
 </body>
 </html>
