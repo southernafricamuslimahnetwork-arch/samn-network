@@ -5,7 +5,7 @@
     { title: "Marriage & Mental Well-Being", src: "assets/marriage-mental-wellbeing.jpeg", alt: "Marriage & Mental Well-Being event poster" },
     { title: "Nikah and Civil Marriage", src: "assets/nikah-and-civil-marriage.jpeg", alt: "Nikah and Civil Marriage event poster" },
     { title: "Raising Muslim Children in Interfaith Families", src: "assets/raising-muslim-children-interfaith-families.jpeg", alt: "Raising Muslim Children in Interfaith Families event poster" },
-    { title: "SAMN Omnibus: Marriage, Faith & Family", src: "assets/samn-omnibus-marriage-faith-family.jpeg", alt: "SAMN Omnibus: Marriage, Faith & Family event poster" }
+    { title: "SAMN Omnibus: Marriage, Faith & Family", src: "assets/samn-omnibus-marriage-faith-family.jpeg", alt: "SAMN Omnibus: Marriage, Faith & Family event poster" },    { title: "4th Annual SAMN Conference 2026", src: "samn-conference-2026.jpg", alt: "4th Annual SAMN Conference 2026 poster: Fellowship and Empowerment, 10-13 December 2026, Windhoek, Namibia" }
   ];
   const featuredImage = document.getElementById("featured-image");
   const featuredTitle = document.getElementById("featured-title");
