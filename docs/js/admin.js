@@ -190,14 +190,19 @@
     } else {
       result = await client.rpc("samn_reject_application", { application_id: id, rejection_note: notes || null });
     }
+    await loadApplications();
     if (result.error) {
-      console.error(result.error);
-      setStatus("dashboard-status", "Action failed. Your role, branch scope, payment status and database setup were checked by the server.", "error");
+      console.error("RPC error:", action, result.error);
+      const e = result.error;
+      setStatus("dashboard-status",
+        "Action failed: " + (e.message || "unknown error") +
+        (e.details ? " (" + e.details + ")" : "") +
+        (e.hint ? " Hint: " + e.hint : ""), "error");
     } else {
+      console.log("RPC result:", action, result.data);
       const done = { endorse: "Application endorsed and sent for final approval.", approve: "Application approved and member record created.", reject: "Application rejected." };
       setStatus("dashboard-status", done[action], "success");
-    }
-    await loadApplications();
+    };
   });
   $("payment-cancel").addEventListener("click", () => $("payment-dialog").close());
   $("payment-form").addEventListener("submit", async (event) => {
