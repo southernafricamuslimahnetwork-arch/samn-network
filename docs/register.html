@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Register for the 4th Annual SAMN Conference, 10–13 December 2026, Windhoek, Namibia.">
+<title>Register | 4th Annual SAMN Conference 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#142d50;--navy2:#203f68;--gold:#c8a45d;--gold-pale:#f4ecd9;--ink:#243247;--muted:#5d6b7d;--line:#d9dee6;--bg:#f6f7f9}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+a{color:inherit}
+.wrap{width:min(1160px,92%);margin:auto}
+
+header{background:#fff;border-bottom:1px solid var(--line)}
+.bar{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.bar a.home{font-weight:800;color:var(--navy);text-decoration:none}
+.bar a.back{font-size:14px;font-weight:600;color:var(--navy2);text-decoration:none}
+.bar a.back:hover{text-decoration:underline}
+
+.hero{background:var(--navy);color:#fff;padding:64px 0 120px}
+.hero h1{font-size:clamp(32px,5vw,54px);line-height:1.08;margin:0 0 18px;font-weight:800;max-width:15em}
+.hero p.lead{font-size:19px;max-width:38em;margin:0 0 26px;color:#dbe3ee}
+.facts{display:flex;flex-wrap:wrap;gap:12px 36px;margin:0;padding:0;list-style:none}
+.facts li{font-size:15px;color:#dbe3ee}
+.facts strong{display:block;color:var(--gold);font-size:13px;font-weight:600;letter-spacing:.02em}
+
+.layout{display:grid;grid-template-columns:1fr 1.15fr;gap:32px;margin-top:-72px;padding-bottom:64px;align-items:start}
+.panel{background:#fff;border-radius:14px;padding:32px;box-shadow:0 10px 30px rgba(20,45,80,.12)}
+.panel h2{margin:0 0 6px;font-size:24px;color:var(--navy)}
+.panel h3{margin:28px 0 8px;font-size:16px;color:var(--navy)}
+.panel p{margin:0 0 12px}
+.sub{color:var(--muted)}
+
+.theme{font-weight:600;color:var(--navy);border-left:4px solid var(--gold);padding-left:14px;margin:14px 0 8px}
+ul.topics{margin:0;padding-left:20px}
+ul.topics li{margin:6px 0}
+
+.fee{background:var(--gold-pale);border-radius:10px;padding:18px 20px;margin-top:22px}
+.fee .amount{font-size:30px;font-weight:800;color:var(--navy);line-height:1.1}
+.fee small{display:block;color:var(--muted);margin-top:4px}
+
+.bank{border:1px solid var(--line);border-radius:10px;padding:16px 20px;margin-top:16px}
+.bank dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 16px;font-size:15px}
+.bank dt{color:var(--muted)}
+.bank dd{margin:0;font-weight:600}
+.todo{background:#fff3cd;padding:0 4px;border-radius:3px}
+
+.btn{display:inline-block;border:0;border-radius:10px;padding:13px 22px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+.btn.gold{background:var(--gold);color:var(--navy)}
+.btn.gold:hover{background:#b8934c}
+.btn.line{border:2px solid var(--navy);color:var(--navy);background:#fff}
+.btn.line:hover{background:var(--navy);color:#fff}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--navy2);outline-offset:2px}
+
+.contacts{list-style:none;margin:0;padding:0}
+.contacts li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.contacts li:first-child{border-top:0}
+.contacts a.wa{font-weight:700;color:var(--navy2);white-space:nowrap}
+
+form .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+label{display:block;font-weight:600;font-size:14px;margin:18px 0 6px;color:var(--navy)}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:#fff}
+input:focus,select:focus,textarea:focus{border-color:var(--navy2)}
+textarea{min-height:84px;resize:vertical}
+.hint{font-size:13px;color:var(--muted);margin-top:4px}
+.check{display:flex;gap:10px;align-items:flex-start;margin-top:20px;font-size:14px}
+.check input{width:auto;margin-top:5px}
+.check label{margin:0;font-weight:500;color:var(--ink)}
+form .btn{margin-top:24px;width:100%;font-size:17px}
+.nok{border:0;padding:0;margin:18px 0 0}
+.nok legend{font-weight:600;font-size:14px;color:var(--navy);padding:0}
+.nok label:first-of-type{margin-top:10px}
+.rules{max-height:230px;overflow-y:auto;background:#eef1f6;border:1.5px solid var(--line);border-radius:10px;padding:14px 18px;font-size:15px}
+.rules ol{margin:0;padding-left:20px}.rules li{margin:6px 0}
+.rules:focus-visible{outline:3px solid var(--navy2)}
+.hp{position:absolute;left:-9999px}
+
+footer{background:var(--navy);color:#c9d3e2;padding:28px 0;font-size:14px}
+
+@media(max-width:860px){
+  .layout{grid-template-columns:1fr}
+  form .row{grid-template-columns:1fr}
+  .panel{padding:24px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="home" href="index.html">Southern Africa Muslimah Network</a>
+    <a class="back" href="index.html">Back to main site</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Join us at the 4th Annual SAMN Conference</h1>
+    <p class="lead">Muslim women from across Southern Africa meet to learn, lead and act together. Reserve your place today.</p>
+    <ul class="facts">
+      <li><strong>When</strong>10 – 13 December 2026</li>
+      <li><strong>Where</strong>Windhoek, Namibia</li>
+      <li><strong>Fee</strong>R550 per delegate</li>
+    </ul>
+  </div>
+</section>
+
+<main class="wrap layout" id="register">
+
+  <!-- LEFT: information -->
+  <aside class="panel">
+    <h2>About the conference</h2>
+    <p class="theme">Fellowship &amp; Empowerment: Walking Together on the Sirāt al-Mustaqīm</p>
+    <h3>Exploring together</h3>
+    <ul class="topics">
+      <li>Economic development through Islamic entrepreneurship</li>
+      <li>Celebrating cultural diversity as a Muslimah</li>
+      <li>Building leadership capacity in our communities</li>
+      <li>Upholding Islamic values while fostering unity</li>
+    </ul>
+
+    <p style="margin-top:20px">
+      <a class="btn line" href="samn-conference-agenda.pdf" download>Download the conference agenda (PDF)</a>
+    </p>
+
+    <h3>Fee and payment</h3>
+    <div class="fee">
+      <div class="amount">R550 <span style="font-size:16px;font-weight:600">per delegate</span></div>
+      <small>R500 participation fee + R50 bank transfer charge</small>
+    </div>
+    <div class="bank">
+      <dl>
+        <dt>Bank</dt><dd>FNB Windhoek Main Branch<br><span style="font-weight:400">PO Box 8004, Bachbrecht, Windhoek<br>207 Independence Avenue<br>Windhoek Central, Namibia</span></dd>
+        <dt>Account name</dt><dd>Ingrid Nunuhe</dd>
+        <dt>Account type</dt><dd>Ecall account</dd>
+        <dt>Account no.</dt><dd>62246575883</dd>
+        <dt>Branch code</dt><dd>282 672</dd>
+        <dt>SWIFT code</dt><dd>FIRNNANX</dd>
+        <dt>Reference</dt><dd>Your surname + SAMN2026</dd>
+      </dl>
+    </div>
+    <p class="hint" style="margin-top:10px">Upload your proof of payment in the form, or send it to one of the contacts below.</p>
+
+    <h3>Questions? Chat on WhatsApp</h3>
+    <ul class="contacts">
+      <li><span>Sr Hawa Ingrid Nunuhe<br><small class="sub">+264 81 201 9989</small></span><a class="wa" href="https://wa.me/264812019989">Chat now</a></li>
+      <li><span>Sr Mirriam Seutloali<br><small class="sub">+266 5953 7865</small></span><a class="wa" href="https://wa.me/26659537865">Chat now</a></li>
+      <li><span>Sr Nazeerah Dlamini<br><small class="sub">+268 7628 2672</small></span><a class="wa" href="https://wa.me/26876282672">Chat now</a></li>
+    </ul>
+  </aside>
+
+  <!-- RIGHT: form -->
+  <section class="panel">
+    <h2>Register to attend</h2>
+    <p class="sub">Fill in your details and we will confirm by email.</p>
+
+    <form name="samn-conference-2026" method="POST" action="register.html?submitted=1" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data">
+      <input type="hidden" name="form-name" value="samn-conference-2026">
+      <p class="hp"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+
+      <div class="row">
+        <div><label for="first">First name</label><input id="first" name="first_name" required autocomplete="given-name"></div>
+        <div><label for="last">Surname</label><input id="last" name="surname" required autocomplete="family-name"></div>
+      </div>
+      <div class="row">
+        <div><label for="email">Email address</label><input id="email" name="email" type="email" required autocomplete="email"></div>
+        <div><label for="wa">WhatsApp number</label><input id="wa" name="whatsapp" type="tel" required autocomplete="tel" placeholder="+27 82 000 0000"></div>
+      </div>
+
+      <label for="postal">Postal address</label>
+      <textarea id="postal" name="postal_address" required autocomplete="street-address"></textarea>
+
+      <label for="country">Country</label>
+      <select id="country" name="country" required>
+        <option value="">Select country</option>
+        <option>South Africa</option><option>Namibia</option><option>Botswana</option>
+        <option>Zimbabwe</option><option>Zambia</option><option>Mozambique</option>
+        <option>Malawi</option><option>Lesotho</option><option>Eswatini</option>
+        <option>Angola</option><option>Other</option>
+      </select>
+
+      <label for="org">Masjid or organisation (name and address)</label>
+      <input id="org" name="masjid_organisation">
+      <label for="orgphone">Masjid or organisation phone number</label>
+      <input id="orgphone" name="masjid_phone" type="tel">
+
+      <fieldset class="nok"><legend>Next of kin (important)</legend>
+        <label for="nokname">Full name</label>
+        <input id="nokname" name="next_of_kin_name" required>
+        <div class="row">
+          <div><label for="nokphone">Phone number</label><input id="nokphone" name="next_of_kin_phone" type="tel" required></div>
+          <div><label for="nokemail">Email address (optional)</label><input id="nokemail" name="next_of_kin_email" type="email"></div>
+        </div>
+      </fieldset>
+
+      <label for="diet">Special diet</label>
+      <input id="diet" name="special_diet" placeholder="Write “None” if not applicable">
+
+      <div class="row">
+        <div><label for="arrive">Arrival date</label><input id="arrive" name="arrival_date" type="date" min="2026-12-01" max="2026-12-31" required></div>
+        <div><label for="depart">Departure date</label><input id="depart" name="departure_date" type="date" min="2026-12-01" max="2026-12-31" required></div>
+      </div>
+
+      <label for="paid">Have you paid the R550 conference registration fee?</label>
+      <select id="paid" name="fee_paid" required>
+        <option value="">Select</option>
+        <option>Yes</option>
+        <option>Not yet</option>
+      </select>
+
+      <label for="member">Are you a registered SAMN member?</label>
+      <select id="member" name="samn_member" required>
+        <option value="">Select</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
+
+      <label for="pop">Proof of payment</label>
+      <input id="pop" name="proof_of_payment" type="file" accept=".pdf,.jpg,.jpeg,.png">
+      <div class="hint">PDF or image. You can also send it later via WhatsApp.</div>
+
+      <label for="rules">SAMNC 2026 Conference Rules and Regulations</label>
+      <div class="rules" id="rules" tabindex="0">
+        <ol>
+          <li>Participants are advised to tell the organisers about any movement out of the conference, for security reasons.</li>
+          <li>Participants clean the sleeping and eating areas daily.</li>
+          <li>Please handle property at the premises with great care. Charges may follow for any breakages.</li>
+          <li>Haram food, speeches and other substances will not be entertained at the conference.</li>
+          <li>Participants are reminded to be careful and alert with their belongings to avoid loss or theft.</li>
+          <li>Participants should adhere to the rules and be time conscious.</li>
+          <li>During the conference, I shall respect another person’s madhab regardless of my views.</li>
+          <li>I will follow the etiquette expected of a visitor.</li>
+          <li>All delegates are expected to attend events and activities on the stipulated programme. No sister is expected to be in the rooms during the programme.</li>
+        </ol>
+        <p class="sub">“…and cooperate with one another in goodness and righteousness.” (Qur’an 5:2)</p>
+      </div>
+      <div class="check">
+        <input id="agree" name="agree_rules" type="checkbox" required>
+        <label for="agree">I have read and agree to the SAMNC 2026 Conference Rules and Regulations in their entirety.</label>
+      </div>
+
+      <label for="sig">Signature (type your full name)</label>
+      <input id="sig" name="signature" required>
+
+      <div class="check">
+        <input id="contactok" name="contact_consent" type="checkbox">
+        <label for="contactok">I agree that SAMN may contact me about the conference.</label>
+      </div>
+
+      <button class="btn gold" type="submit">Register now</button>
+    </form>
+    <p id="thanks" class="fee" hidden style="margin-top:20px"><strong>Thank you, your registration has been received.</strong> We will confirm by email.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Southern Africa Muslimah Network · 4th Annual SAMN Conference · 10 – 13 December 2026 · Windhoek, Namibia</div>
+</footer>
+
+<script>
+  if (location.search.indexOf('submitted=1') !== -1) {
+    var f = document.querySelector('form'), t = document.getElementById('thanks');
+    if (f && t) { f.hidden = true; t.hidden = false; }
+  }
+</script>
+</body>
+</html>
