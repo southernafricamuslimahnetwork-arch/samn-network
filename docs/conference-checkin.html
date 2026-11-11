@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAMN Conference: Check-in</title>
+<style>
+:root{--navy:#162d52;--bg:#f6f7fa;--tx:#1b2433;--card:#fff;--bd:#d8dde6}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1624;--tx:#e8ecf3;--card:#18233a;--bd:#2c3a55}}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:var(--navy);color:#fff;padding:1rem 1.2rem}header h1{margin:0;font-size:1.1rem}
+main{max-width:560px;margin:0 auto;padding:1rem}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:1rem;margin-bottom:1rem}
+label{display:block;margin:.6rem 0 .2rem;font-weight:600;font-size:.9rem}
+input,select{width:100%;padding:.6rem;border:1px solid var(--bd);border-radius:6px;font:inherit;background:var(--card);color:var(--tx)}
+button{background:var(--navy);color:#fff;border:0;border-radius:6px;padding:.65rem 1rem;font:inherit;font-weight:600;cursor:pointer;margin-top:.7rem;margin-right:.4rem}
+button.alt{background:transparent;color:var(--navy);border:1px solid var(--navy)}
+@media (prefers-color-scheme:dark){button.alt{color:#e3c987;border-color:#e3c987}}
+.hidden{display:none}.status{min-height:1.2rem;font-size:.9rem;margin-top:.5rem}.error{color:#b3261e}
+.res{border-left:8px solid #999;padding:.8rem 1rem;border-radius:6px;background:var(--card);border-top:1px solid var(--bd);border-right:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.res.good{border-left-color:#1b7a3a}.res.warn{border-left-color:#d68a00}.res.bad{border-left-color:#b3261e}
+.res h2{margin:0 0 .3rem;font-size:1.2rem}#reader{width:100%}
+</style>
+</head>
+<body>
+<header><h1>4th Annual SAMN Conference: Officer check-in</h1></header>
+<main>
+<form id="login" class="card">
+  <label for="em">Email</label><input id="em" type="email" required autocomplete="username">
+  <label for="pw">Password</label><input id="pw" type="password" required autocomplete="current-password">
+  <button type="submit">Sign in</button><div id="login-status" class="status" role="status"></div>
+</form>
+
+<div id="app" class="hidden">
+  <div class="card">
+    <div id="who" class="status"></div>
+    <label for="day">Check-in day</label>
+    <select id="day">
+      <option value="2026-12-10">Thu 10 Dec</option><option value="2026-12-11">Fri 11 Dec</option>
+      <option value="2026-12-12">Sat 12 Dec</option><option value="2026-12-13">Sun 13 Dec</option>
+    </select>
+    <button id="scan-btn">Start camera scan</button><button id="logout" class="alt">Sign out</button>
+    <div id="reader"></div>
+    <label for="manual">Or type the registration number</label>
+    <input id="manual" placeholder="SAMN26-0001" autocomplete="off">
+    <button id="manual-go">Check in</button>
+    <div id="s" class="status" role="status"></div>
+  </div>
+  <div id="result"></div>
+</div>
+</main>
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const cfg = window.SAMN_CONFIG || {};
+  const sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, { auth: { persistSession: true } });
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  let scanner = null, busy = false;
+
+  // Default the day to today when it falls inside the conference
+  const today = new Date().toISOString().slice(0, 10);
+  if ([...$("day").options].some((o) => o.value === today)) $("day").value = today;
+
+  async function init() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) return;
+    const { data } = await sb.from("samn_officer_profiles").select("full_name, role").eq("user_id", session.user.id).maybeSingle();
+    if (!data || !["continental_admin", "country_officer"].includes(data.role)) {
+      await sb.auth.signOut(); $("login-status").textContent = "This account is not an authorised SAMN officer."; $("login-status").className = "status error"; return;
+    }
+    $("who").textContent = "Signed in: " + (data.full_name || session.user.email);
+    $("login").classList.add("hidden"); $("app").classList.remove("hidden");
+  }
+  $("login").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const { error } = await sb.auth.signInWithPassword({ email: $("em").value.trim().toLowerCase(), password: $("pw").value });
+    if (error) { $("login-status").textContent = "Sign-in failed."; $("login-status").className = "status error"; return; }
+    $("pw").value = ""; init();
+  });
+  $("logout").onclick = async () => { await stop(); await sb.auth.signOut(); location.reload(); };
+
+  async function stop() { if (scanner) { try { await scanner.stop(); } catch (e) {} scanner = null; } }
+
+  async function checkIn(raw) {
+    const m = String(raw).toUpperCase().match(/SAMN26-\d{4}/);
+    if (!m || busy) { if (!m) $("s").textContent = "That is not a SAMN registration number."; return; }
+    busy = true; $("s").textContent = "Checking " + m[0] + "…";
+    const reg = m[0];
+    const [ci, dl] = await Promise.all([
+      sb.rpc("conf_check_in", { p_reg: reg, p_day: $("day").value }),
+      sb.rpc("conf_get_delegate", { p_reg: reg })
+    ]);
+    busy = false; $("s").textContent = "";
+    if (ci.error) { $("result").innerHTML = `<div class="res bad"><h2>Error</h2>${esc(ci.error.message)}</div>`; return; }
+    const r = ci.data && ci.data[0];
+    if (!r || r.result === "not_found") { $("result").innerHTML = `<div class="res bad"><h2>Not found</h2>${esc(reg)} is not registered.</div>`; return; }
+    const d = (dl.data && dl.data[0]) || {};
+    const dup = r.result === "duplicate";
+    const unpaid = r.payment_status !== "confirmed";
+    const cls = unpaid ? "bad" : dup ? "warn" : "good";
+    $("result").innerHTML = `<div class="res ${cls}">
+      <h2>${esc(r.full_name)}</h2>
+      <div>${esc(reg)} · ${esc(d.country_code || "")} · ${esc(d.organisation || "")}</div>
+      <p><strong>${dup ? "Already checked in today at " + esc(new Date(r.checked_in_at).toLocaleTimeString()) : "Checked in at " + esc(new Date(r.checked_in_at).toLocaleTimeString())}</strong></p>
+      <p>${unpaid ? "<strong>Payment NOT confirmed (" + esc(r.payment_status) + ")</strong>" : "Payment confirmed"}</p>
+      <p>Diet: ${esc(d.diet || "none noted")}<br>Notes: ${esc(d.arrival_notes || "none")}<br>Days present: ${esc(d.days_present ?? "")}</p>
+      ${unpaid ? `<button id="proof" data-reg="${esc(reg)}">View proof of payment</button><button id="confirm" data-reg="${esc(reg)}">Mark payment confirmed</button>` : ""}
+    </div>`;
+  }
+
+  $("result").addEventListener("click", async (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.id === "confirm") {
+      const { error } = await sb.from("conference_registrations").update({ payment_status: "confirmed" }).eq("reg_number", b.dataset.reg);
+      if (!error) checkIn(b.dataset.reg);
+    }
+    if (b.id === "proof") {
+      const { data } = await sb.from("conference_registrations").select("payment_proof_path").eq("reg_number", b.dataset.reg).maybeSingle();
+      if (!data || !data.payment_proof_path) { $("s").textContent = "No proof of payment on file."; return; }
+      const win = window.open("", "_blank");
+      const { data: u } = await sb.storage.from("conference-proofs").createSignedUrl(data.payment_proof_path, 300);
+      if (u && win) { win.opener = null; win.location.href = u.signedUrl; } else if (win) win.close();
+    }
+  });
+
+  $("manual-go").onclick = () => { checkIn($("manual").value); $("manual").value = ""; };
+  $("scan-btn").onclick = async () => {
+    if (scanner) { await stop(); $("scan-btn").textContent = "Start camera scan"; return; }
+    scanner = new Html5Qrcode("reader");
+    $("scan-btn").textContent = "Stop camera";
+    try {
+      await scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 240 }, (text) => { checkIn(text); });
+    } catch (err) { $("s").textContent = "Could not open the camera. Allow camera access or type the number."; scanner = null; $("scan-btn").textContent = "Start camera scan"; }
+  };
+  init();
+})();
+</script>
+</body>
+</html>

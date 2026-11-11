@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAMN Conference: Member Registration</title>
+<style>
+:root{--navy:#162d52;--gold:#c9a24b;--bg:#f6f7fa;--tx:#1b2433;--card:#fff;--bd:#d8dde6}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1624;--tx:#e8ecf3;--card:#18233a;--bd:#2c3a55}}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:var(--navy);color:#fff;padding:1rem 1.2rem}header h1{margin:0;font-size:1.15rem}header p{margin:.2rem 0 0;color:#e3c987;font-size:.9rem}
+main{max-width:640px;margin:0 auto;padding:1rem}
+.tabs{display:flex;gap:.5rem;margin:.5rem 0 1rem}.tabs button{flex:1}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:1rem;margin-bottom:1rem}
+label{display:block;margin:.7rem 0 .2rem;font-weight:600;font-size:.9rem}
+input,textarea{width:100%;padding:.6rem;border:1px solid var(--bd);border-radius:6px;font:inherit;background:var(--card);color:var(--tx)}
+button,.btn{background:var(--navy);color:#fff;border:0;border-radius:6px;padding:.65rem 1rem;font:inherit;font-weight:600;cursor:pointer;margin-top:.8rem;text-decoration:none;display:inline-block}
+button.alt,.btn.alt{background:transparent;color:var(--navy);border:1px solid var(--navy)}
+@media (prefers-color-scheme:dark){button.alt,.btn.alt{color:#e3c987;border-color:#e3c987}}
+.hidden{display:none}.status{min-height:1.2rem;margin-top:.6rem;font-size:.9rem}.error{color:#b3261e}.ok{color:#1b7a3a}
+.muted{opacity:.75;font-size:.85rem}
+.tag{width:105mm;height:148mm;background:#fff;color:#000;border:2px solid #162d52;border-radius:6px;text-align:center;padding:8mm;margin:0 auto;display:flex;flex-direction:column;justify-content:space-between;align-items:center}
+.tag .conf{font-size:11pt;font-weight:700;color:#162d52}.tag .name{font-size:22pt;font-weight:800;line-height:1.15}
+.tag .sub{font-size:13pt}.tag .reg{font-size:15pt;font-weight:700;letter-spacing:1px}.tag svg{width:42mm;height:42mm}
+.cert{background:#fff;color:#000;border:6px double #162d52;padding:12mm;text-align:center;aspect-ratio:297/210;display:flex;flex-direction:column;justify-content:space-between;font-family:Georgia,serif}
+.cert h2{margin:0;font-size:26pt;color:#162d52}.cert .name{font-size:24pt;font-weight:700;border-bottom:1px solid #c9a24b;display:inline-block;padding:0 1rem}
+.cert p{margin:.3rem 0}.cert .sig{display:flex;justify-content:space-around;font-size:10pt}.cert .sig div{border-top:1px solid #000;padding-top:2px;min-width:40%}
+.cert .foot{display:flex;justify-content:space-between;align-items:flex-end;font-size:9pt}.cert svg{width:22mm;height:22mm}
+@media print{body *{visibility:hidden}.printing,.printing *{visibility:visible}.printing{position:absolute;left:0;top:0;margin:0}}
+</style>
+</head>
+<body>
+<header><h1>4th Annual SAMN Conference</h1><p>10 – 13 December 2026 · Windhoek, Namibia</p></header>
+<main>
+<div class="tabs"><button id="t-reg">Register</button><button id="t-cert" class="alt">Certificate</button></div>
+
+<section id="reg-view">
+  <form id="lookup" class="card">
+    <h2 style="margin-top:0">Find your membership</h2>
+    <label for="l-num">Membership number</label><input id="l-num" required autocomplete="off">
+    <label for="l-sur">Surname</label><input id="l-sur" required autocomplete="off">
+    <button type="submit">Look me up</button>
+    <div id="l-status" class="status" role="status"></div>
+    <a id="l-join" class="btn alt hidden" href="membership.html">Not a member yet? Go to the membership page</a>
+  </form>
+
+  <form id="reg" class="card hidden">
+    <h2 style="margin-top:0">Your details</h2>
+    <p id="r-summary" class="muted"></p>
+    <label for="r-phone">Phone / WhatsApp</label><input id="r-phone" required>
+    <label for="r-org">Masjid or organisation</label><input id="r-org" required>
+    <label for="r-diet">Special diet (optional)</label><input id="r-diet" placeholder="e.g. vegetarian, allergies">
+    <label for="r-arr">Arrival, room or other notes (optional)</label><textarea id="r-arr" rows="3"></textarea>
+    <label for="r-proof">Proof of payment, R550 (PDF or image)</label><input id="r-proof" type="file" accept="image/*,.pdf" required>
+    <button type="submit">Complete registration</button>
+    <div id="r-status" class="status" role="status"></div>
+  </form>
+
+  <div id="done" class="card hidden">
+    <h2 style="margin-top:0">You are registered</h2>
+    <p class="muted">Your registration is confirmed once payment is verified. Keep this name tag: print it, or screenshot it and show it on your phone.</p>
+    <div id="tag" class="tag"></div>
+    <button id="print-tag">Print name tag</button>
+  </div>
+</section>
+
+<section id="cert-view" class="hidden">
+  <div id="verify-box" class="card hidden"></div>
+  <form id="certform" class="card">
+    <h2 style="margin-top:0">Certificate of Attendance</h2>
+    <p class="muted">Available after the conference to delegates who were checked in.</p>
+    <label for="c-reg">Registration number</label><input id="c-reg" placeholder="SAMN26-0001" required>
+    <label for="c-sur">Surname</label><input id="c-sur" required>
+    <button type="submit">Get my certificate</button>
+    <div id="c-status" class="status" role="status"></div>
+  </form>
+  <div id="cert-out" class="hidden"><div id="cert" class="cert"></div><button id="print-cert">Download / print PDF</button></div>
+</section>
+</main>
+
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const cfg = window.SAMN_CONFIG || {};
+  const sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const say = (id, msg, cls = "") => { $(id).textContent = msg; $(id).className = "status " + cls; };
+  const qr = (text) => { const q = qrcode(0, "M"); q.addData(text); q.make(); return q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); };
+  const base = location.origin + location.pathname;
+  let member = null;
+
+  function tab(which) {
+    $("reg-view").classList.toggle("hidden", which !== "reg");
+    $("cert-view").classList.toggle("hidden", which !== "cert");
+    $("t-reg").className = which === "reg" ? "" : "alt";
+    $("t-cert").className = which === "cert" ? "" : "alt";
+  }
+  $("t-reg").onclick = () => tab("reg");
+  $("t-cert").onclick = () => tab("cert");
+
+  function printEl(el, page) {
+    const s = document.createElement("style");
+    s.textContent = "@page{size:" + page + ";margin:0}";
+    document.head.appendChild(s);
+    el.classList.add("printing");
+    window.print();
+    el.classList.remove("printing");
+    s.remove();
+  }
+
+  $("lookup").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    $("l-join").classList.add("hidden");
+    say("l-status", "Looking…");
+    const { data, error } = await sb.rpc("conf_lookup_member", { p_number: $("l-num").value, p_surname: $("l-sur").value });
+    if (error) { say("l-status", "Something went wrong. Please try again.", "error"); return; }
+    if (!data || !data.length) {
+      say("l-status", "We could not find that membership number and surname.", "error");
+      $("l-join").classList.remove("hidden");
+      return;
+    }
+    member = data[0];
+    say("l-status", member.already_registered
+      ? "You are already registered. Submit again to update your details and see your name tag." : "Member found.", "ok");
+    $("r-summary").textContent = `${member.full_name} · ${member.country_code || ""}${member.district ? " · " + member.district : ""} · ${member.email || ""}. These come from your membership record.`;
+    $("reg").classList.remove("hidden");
+  });
+
+  $("reg").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = e.submitter; btn.disabled = true;
+    say("r-status", "Uploading proof of payment…");
+    let path = null;
+    const f = $("r-proof").files[0];
+    if (f) {
+      if (f.size > 8 * 1024 * 1024) { say("r-status", "File is too large (8 MB maximum).", "error"); btn.disabled = false; return; }
+      const ext = (f.name.split(".").pop() || "dat").toLowerCase().replace(/[^a-z0-9]/g, "");
+      path = (crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(36).slice(2)) + "." + ext;
+      const up = await sb.storage.from("conference-proofs").upload(path, f, { contentType: f.type });
+      if (up.error) { say("r-status", "Upload failed. Please try again.", "error"); btn.disabled = false; return; }
+    }
+    say("r-status", "Registering…");
+    const { data, error } = await sb.rpc("conf_register", {
+      p_number: $("l-num").value, p_surname: $("l-sur").value, p_phone: $("r-phone").value,
+      p_organisation: $("r-org").value, p_diet: $("r-diet").value, p_arrival_notes: $("r-arr").value, p_proof_path: path
+    });
+    btn.disabled = false;
+    if (error || !data || !data.length) { say("r-status", "Registration failed. Please try again or contact the organisers.", "error"); return; }
+    const r = data[0];
+    $("tag").innerHTML = `<div class="conf">4th Annual SAMN Conference<br>10 – 13 December 2026 · Windhoek</div>
+      <div><div class="name">${esc(r.full_name)}</div><div class="sub">${esc(r.organisation || "")}</div><div class="sub">${esc(r.country_code || "")}</div></div>
+      <div>${qr(base + "?reg=" + encodeURIComponent(r.reg_number))}<div class="reg">${esc(r.reg_number)}</div></div>`;
+    $("reg").classList.add("hidden"); $("lookup").classList.add("hidden");
+    $("done").classList.remove("hidden");
+  });
+  $("print-tag").onclick = () => printEl($("tag"), "A6");
+
+  $("certform").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    say("c-status", "Checking…");
+    const { data, error } = await sb.rpc("conf_get_certificate", { p_reg: $("c-reg").value, p_surname: $("c-sur").value });
+    if (error || !data || !data.length) {
+      const m = (error && error.message) || "";
+      say("c-status", /not open/i.test(m) ? "Certificates are not open yet. Please check back after the conference."
+        : "We could not find an attendance record for these details.", "error");
+      return;
+    }
+    const c = data[0];
+    $("cert").innerHTML = `<div><div style="font-size:11pt;letter-spacing:2px;color:#162d52">SOUTHERN AFRICA MUSLIMAH NETWORK</div><h2>Certificate of Attendance</h2></div>
+      <div><p>This is to certify that</p><p><span class="name">${esc(c.full_name)}</span></p>
+      <p>attended the 4th Annual SAMN Conference<br><em>Fellowship &amp; Empowerment: Walking Together on the Sirāt al-Mustaqīm</em><br>10 – 13 December 2026, Windhoek, Namibia</p></div>
+      <div class="sig"><div>Signature<br>Name, Title</div><div>Signature<br>Name, Title</div></div>
+      <div class="foot"><span>Certificate no. ${esc(c.certificate_no)}</span><span>${qr(base + "?verify=" + encodeURIComponent(c.certificate_no))}</span></div>`;
+    say("c-status", "");
+    $("cert-out").classList.remove("hidden");
+  });
+  $("print-cert").onclick = () => printEl($("cert"), "A4 landscape");
+
+  // Links from QR codes
+  const p = new URLSearchParams(location.search);
+  if (p.get("reg")) { tab("cert"); $("c-reg").value = p.get("reg"); $("c-sur").focus(); }
+  if (p.get("verify")) {
+    tab("cert");
+    sb.rpc("conf_verify_certificate", { p_cert: p.get("verify") }).then(({ data }) => {
+      const b = $("verify-box"); b.classList.remove("hidden");
+      b.innerHTML = data && data.length
+        ? `<strong class="ok">Valid.</strong> Issued to ${esc(data[0].full_name)}.`
+        : `<strong class="error">Not valid.</strong> This certificate number was not found.`;
+    });
+  }
+})();
+</script>
+</body>
+</html>
