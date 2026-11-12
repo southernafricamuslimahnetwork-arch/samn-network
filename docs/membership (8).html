@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Southern Africa Muslimah Network membership registration">
+  <title>Membership | SAMN</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script defer src="js/public.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img src="assets/samn-logo.jpeg" alt="SAMN logo" onerror="this.style.display='none'">
+      <span><strong>SAMN</strong><small>Southern Africa Muslimah Network</small></span>
+    </a>
+    <nav><a href="index.html">Home</a><a href="index.html#posters">Posters</a><a href="membership.html">Membership</a><a href="conference-lookup.html">Conference</a><a href="assets/SAMN-Constitution.pdf" target="_blank" rel="noopener">Constitution</a><a href="admin.html">Officer login</a></nav>
+  </header>
+  <main class="container">
+    <section class="hero">
+      <p class="eyebrow">Membership</p>
+      <h1>Join the SAMN sisterhood</h1>
+      <p>Submit a membership application to your country branch. An authorised SAMN officer will review it.</p>
+    </section>
+    <section class="panel" id="conference">
+      <p class="eyebrow">Conference</p>
+      <h2>4th Annual SAMN Conference</h2>
+      <p class="muted">10 – 13 December 2026 · Windhoek, Namibia. Members register with their membership number and surname, receive a name tag with a QR code, and collect their certificate after the conference.</p>
+      <a class="button" href="conference-lookup.html">Register for the conference</a>
+    </section>
+    <section class="panel">
+      <h2>Membership application</h2>
+      <p class="muted">Please provide accurate details. Only information needed to process membership is requested.</p>
+      <p class="muted">Before you apply, you are welcome to read the <a href="assets/SAMN-Constitution.pdf" target="_blank" rel="noopener" style="color:var(--navy);font-weight:700;text-decoration:underline">SAMN Constitution (PDF)</a>. It opens in a new tab, so your form stays as it is.</p>
+      <form id="membership-form">
+        <div class="form-grid">
+          <label>Full name <span>*</span><input name="full_name" autocomplete="name" maxlength="120" required></label>
+          <label>Email address <span>*</span><input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+          <label>Phone / WhatsApp <span>*</span><input name="phone" type="tel" autocomplete="tel" maxlength="40" required></label>
+          <label>Country branch <span>*</span>
+            <select name="country_code" required>
+              <option value="">Choose your branch</option>
+              <option value="BW">Botswana</option><option value="LS">Lesotho</option>
+              <option value="MW">Malawi</option><option value="MZ">Mozambique</option>
+              <option value="NA">Namibia</option><option value="ZA">South Africa</option>
+              <option value="SZ">Eswatini</option><option value="TZ">Tanzania</option><option value="ZM">Zambia</option>
+             <option value="ZW">Zimbabwe</option><option value="KE">Kenya</option><option value="OTHER">Other / emerging branch</option>
+            </select>
+          </label>
+          <label>Town / district <input name="district" maxlength="100" autocomplete="address-level2"></label>
+          <label>Preferred contact method
+            <select name="contact_method"><option value="WhatsApp">WhatsApp</option><option value="Email">Email</option><option value="Phone call">Phone call</option></select>
+          </label>
+        </div>
+        <div class="notice" style="margin:0 0 16px">
+          <strong>Membership fee and proof of payment</strong>
+          <p>The new Regular Member fee is R300 (South African rand). Please ask your Country Branch for its payment details, use your full name as the payment reference, and upload your proof of payment below (PDF, JPG or PNG, up to 5 MB).</p>
+        </div>
+        <label>Proof of payment <span>*</span><input name="payment_proof" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" required></label>
+        <label class="consent"><input type="checkbox" name="eligibility" required> I confirm that I am a woman, a practising Muslim, and at least 18 years old (the requirements for Regular Membership), or that I am applying as a supporter and understand an officer will review my category.</label>
+        <label class="consent"><input type="checkbox" name="consent" required> I consent to SAMN using these details to process my membership application and contact me about it. I understand that submission does not automatically make me a member.</label>
+        <button class="button" type="submit">Submit application</button>
+        <p id="form-status" class="status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+    <section class="notice">
+      <strong>Privacy note</strong>
+      <p>Do not submit passwords, identity document numbers, banking details, or sensitive personal information in this form. SAMN should publish its approved privacy notice and retention period before launch.</p>
+    </section>
+  </main>
+  <footer>© <span id="year"></span> Southern Africa Muslimah Network (SAMN)</footer>
+</body>
+</html>
