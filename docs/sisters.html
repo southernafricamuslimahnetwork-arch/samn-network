@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sisters’ Services | SAMN</title>
+<style>
+:root{--navy:#142d50;--gold:#c8a45d;--gold-pale:#f4ecd9;--ink:#243247;--muted:#64748b;--paper:#fbfaf7;--line:#e5e7eb;--teal:#277b79}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--paper);line-height:1.6}
+a{color:inherit;text-decoration:none}
+header{background:#fff;border-bottom:1px solid var(--line)}
+.bar{width:min(760px,92%);margin:auto;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;color:var(--navy);font-weight:800;letter-spacing:.04em}
+.brand img{width:48px;height:48px;object-fit:contain;border-radius:50%}
+.brand small{display:block;font-size:11px;letter-spacing:0;color:var(--muted);font-weight:500}
+.back{font-size:13px;font-weight:650;color:var(--teal)}
+main{width:min(760px,92%);margin:0 auto;padding:44px 0 56px}
+h1{font-size:clamp(30px,6vw,42px);line-height:1.12;letter-spacing:-.03em;color:var(--navy);margin:0 0 10px}
+.lead{color:var(--muted);margin:0 0 30px;max-width:560px}
+.tile{display:block;background:#fff;border:1px solid var(--line);border-left:5px solid var(--gold);border-radius:12px;padding:22px 24px;margin-bottom:16px}
+a.tile:hover,a.tile:focus-visible{background:var(--gold-pale);outline:none}
+a.tile:focus-visible{box-shadow:0 0 0 3px var(--teal)}
+.tile h2{margin:0 0 4px;font-size:20px;color:var(--navy)}
+.tile p{margin:0;color:var(--muted);font-size:14px}
+.tile .go{display:inline-block;margin-top:12px;font-weight:750;font-size:14px;color:var(--navy)}
+.tile.off{border-left-color:var(--line);background:#f3f6f8}
+.tile.off h2{color:var(--muted)}
+.tile.off .go{color:var(--muted);font-weight:600}
+.help{margin-top:30px;font-size:13px;color:var(--muted)}
+.help a{color:var(--teal);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header>
+ <div class="bar">
+  <a class="brand" href="index.html" aria-label="SAMN home"><img src="assets/samn-logo-main.png" alt="SAMN logo"><span>SAMN<small>Southern Africa Muslimah Network</small></span></a>
+  <a class="back" href="index.html">Back to main site</a>
+ </div>
+</header>
+<main>
+ <h1>Sisters’ services</h1>
+ <p class="lead">Use your SAMN membership number and surname. You do not need a password.</p>
+
+ <a class="tile" href="conference-lookup.html">
+  <h2>Conference registration and name tag</h2>
+  <p>Check your registration and get your name tag.</p>
+  <span class="go">Open conference registration</span>
+ </a>
+
+ <!-- Set CARD_LIVE to true in the script below when the membership card page is ready. -->
+ <a class="tile" id="card-tile" href="my-membership.html">
+  <h2>Membership card and certificate</h2>
+  <p id="card-text">View your membership card and certificate.</p>
+  <span class="go" id="card-go">Open my membership</span>
+ </a>
+
+ <p class="help">Cannot find your membership? Write to <a href="mailto:southernafricamuslimahnetwork@gmail.com">southernafricamuslimahnetwork@gmail.com</a> or message us on <a href="https://wa.me/26659537865" target="_blank" rel="noopener">WhatsApp</a>.</p>
+</main>
+<script>
+// Switch to true when my-membership.html is live and the payment gate and officer step are confirmed.
+var CARD_LIVE = false;
+if (!CARD_LIVE) {
+  var t = document.getElementById('card-tile');
+  t.removeAttribute('href');
+  t.className = 'tile off';
+  t.setAttribute('aria-disabled', 'true');
+  document.getElementById('card-text').textContent = 'Not open yet. We will announce when your card is ready.';
+  document.getElementById('card-go').textContent = 'Opening soon';
+}
+</script>
+</body>
+</html>
