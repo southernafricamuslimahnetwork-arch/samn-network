@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My membership – SAMN</title>
+<style>
+:root{--navy:#0f2a5c;--gold:#c9a24a;--cream:#fffaf0;--ink:#1a2238;--muted:#55607a;--line:#d9dde7;--bg:#f3f5f9;--err:#a3262a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.serif{font-family:"Palatino Linotype",Palatino,Georgia,serif}
+main{max-width:640px;margin:0 auto;padding:28px 16px 60px}
+h1{font-family:"Palatino Linotype",Palatino,Georgia,serif;font-size:2rem;margin:0 0 6px;color:var(--navy)}
+.lead{color:var(--muted);margin:0 0 22px}
+form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+label{display:block;font-weight:600;margin:0 0 6px}
+input{width:100%;font:inherit;padding:12px 14px;border:1px solid #b9c0d0;border-radius:10px;margin-bottom:16px;background:#fff;color:var(--ink)}
+input:focus,button:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
+.hint{font-size:.88rem;color:var(--muted);margin:-10px 0 16px}
+button{font:inherit;font-weight:600;cursor:pointer;border-radius:10px;padding:12px 18px;border:1px solid var(--navy)}
+.primary{background:var(--navy);color:#fff}
+.ghost{background:#fff;color:var(--navy)}
+.tabs{display:flex;gap:8px;margin:26px 0 14px;flex-wrap:wrap}
+.tabs button[aria-pressed="true"]{background:var(--navy);color:#fff}
+#msg{margin:14px 0 0;color:var(--err);font-weight:600}
+#msg:empty{display:none}
+.sheet{background:var(--cream);border:8px solid var(--gold);border-radius:14px;text-align:center;overflow:hidden}
+.band{background:var(--navy);color:var(--gold);padding:14px 16px;font-family:"Palatino Linotype",Palatino,Georgia,serif}
+.band strong{display:block;color:#fff;font-size:1.15rem}
+.seal{width:64px;height:64px;margin:0 auto 6px}
+.body{padding:26px 22px 28px}
+.name{font-family:"Palatino Linotype",Palatino,Georgia,serif;font-style:italic;font-weight:700;color:var(--navy);font-size:2rem;margin:6px 0 4px;overflow-wrap:anywhere}
+.country{margin:0 0 14px;color:var(--ink)}
+.num{font-family:"Palatino Linotype",Palatino,Georgia,serif;font-weight:700;letter-spacing:.08em;color:var(--navy);font-size:1.25rem}
+.small{color:var(--muted);font-size:.9rem;margin-top:6px}
+.cert p{font-family:"Palatino Linotype",Palatino,Georgia,serif;font-size:1.05rem;margin:10px auto;max-width:44ch}
+.payform{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px}
+.payform h2{font-family:"Palatino Linotype",Palatino,Georgia,serif;margin:0 0 6px;color:var(--navy);font-size:1.25rem}
+#pmsg{margin:12px 0 0;font-weight:600}
+#pmsg:empty{display:none}
+#pmsg.ok{color:#1b6e3a}
+#pmsg.err{color:var(--err)}
+.actions{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+[hidden]{display:none!important}
+@media print{
+  body{background:#fff}
+  .noprint{display:none!important}
+  main{padding:0;max-width:none}
+  .sheet{border-width:10px;break-inside:avoid}
+  .band,.sheet{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (prefers-reduced-motion:no-preference){.sheet{animation:in .25s ease-out}@keyframes in{from{opacity:0}to{opacity:1}}}
+</style>
+</head>
+<body>
+<main>
+  <div class="noprint">
+    <h1>My membership</h1>
+    <p class="lead">Get your SAMN membership certificate and card at any time. Enter your membership number and surname.</p>
+    <form id="f" novalidate>
+      <label for="num">Membership number</label>
+      <input id="num" autocomplete="off" autocapitalize="characters" placeholder="SAMN-BW-015">
+      <label for="sur">Surname</label>
+      <input id="sur" autocomplete="family-name" placeholder="As it appears on your membership">
+      <p class="hint">Hyphenated surnames work with or without the hyphen.</p>
+      <button class="primary" id="go" type="submit">Find my membership</button>
+      <p id="msg" role="alert"></p>
+    </form>
+
+    <form id="pay" class="payform" hidden novalidate>
+      <h2 id="payTitle"></h2>
+      <p class="lead" id="payText"></p>
+      <label for="proof">Proof of payment (PDF or image, up to 5 MB)</label>
+      <input id="proof" type="file" accept="application/pdf,image/*">
+      <button class="primary" id="up" type="submit">Upload proof</button>
+      <p id="pmsg" role="status"></p>
+    </form>
+  </div>
+
+  <section id="out" hidden>
+    <div class="tabs noprint">
+      <button type="button" id="tCard" aria-pressed="true">Membership card</button>
+      <button type="button" id="tCert" aria-pressed="false">Certificate</button>
+    </div>
+
+    <article class="sheet" id="card">
+      <div class="band">
+        <svg class="seal" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#fffaf0" stroke="#c9a24a" stroke-width="3"/><text x="32" y="38" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="15" fill="#0f2a5c">SAMN</text></svg>
+        <strong>Southern Africa Muslimah Network</strong>
+        Membership card
+      </div>
+      <div class="body">
+        <div class="name" id="cName"></div>
+        <p class="country" id="cCountry"></p>
+        <div class="num" id="cNum"></div>
+        <div class="small" id="cYear"></div>
+      </div>
+    </article>
+
+    <article class="sheet cert" id="cert" hidden>
+      <div class="band">
+        <svg class="seal" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#fffaf0" stroke="#c9a24a" stroke-width="3"/><text x="32" y="38" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="15" fill="#0f2a5c">SAMN</text></svg>
+        <strong>Southern Africa Muslimah Network</strong>
+        Certificate of membership
+      </div>
+      <div class="body">
+        <p>This is to certify that</p>
+        <div class="name" id="eName"></div>
+        <p>is a member of the Southern Africa Muslimah Network, member number</p>
+        <div class="num" id="eNum"></div>
+        <p id="eYear"></p>
+        <div class="small" id="eDate"></div>
+      </div>
+    </article>
+
+    <div class="actions noprint">
+      <button type="button" class="primary" id="print">Print or save as PDF</button>
+      <button type="button" class="ghost" id="again">Look up another member</button>
+    </div>
+  </section>
+</main>
+
+<script>
+// 1. Replace the key below with the "anon public" key from Supabase: Settings > API. Never use the service_role key.
+const SUPABASE_URL = 'https://prkjdqokorqiqdnumuoq.supabase.co';
+const ANON_KEY = 'PASTE_ANON_KEY_HERE';
+
+const $ = id => document.getElementById(id);
+
+async function rpc(fn, args) {
+  const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', apikey: ANON_KEY, Authorization: 'Bearer ' + ANON_KEY },
+    body: JSON.stringify(args)
+  });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+function show(which) {
+  const card = which === 'card';
+  $('card').hidden = !card;
+  $('cert').hidden = card;
+  $('tCard').setAttribute('aria-pressed', card);
+  $('tCert').setAttribute('aria-pressed', !card);
+}
+
+$('tCard').onclick = () => show('card');
+$('tCert').onclick = () => show('cert');
+$('print').onclick = () => window.print();
+$('again').onclick = () => {
+  $('out').hidden = true;
+  $('pay').hidden = true;
+  $('sur').value = '';
+  $('msg').textContent = '';
+  $('num').focus();
+  window.scrollTo(0, 0);
+};
+
+function showPay(state) {
+  const pending = state === 'pending';
+  $('payTitle').textContent = pending ? 'Proof received' : 'Upload your proof of payment';
+  $('payText').textContent = pending
+    ? 'An officer will verify it. Your card and certificate appear here once it is verified. You can upload a different file if you sent the wrong one.'
+    : 'Your card and certificate are released after you upload your proof of membership payment and an officer verifies it.';
+  $('pmsg').textContent = '';
+  $('pmsg').className = '';
+  $('pay').hidden = false;
+  $('pay').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+$('pay').addEventListener('submit', async e => {
+  e.preventDefault();
+  const pm = $('pmsg');
+  const fail = t => { pm.className = 'err'; pm.textContent = t; };
+  pm.className = ''; pm.textContent = '';
+  const f = $('proof').files[0];
+  if (!f) return fail('Choose your proof of payment file.');
+  if (f.size > 5 * 1024 * 1024) return fail('The file is over 5 MB. Choose a smaller file.');
+  if (!(f.type === 'application/pdf' || f.type.startsWith('image/'))) return fail('Upload a PDF or an image.');
+
+  const num = $('num').value.trim().toUpperCase();
+  const sur = $('sur').value.trim();
+  const safe = f.name.replace(/[^A-Za-z0-9._-]/g, '_').slice(-60);
+  const path = 'membership/' + num + '/' + Date.now() + '-' + safe;
+  const b = $('up');
+  b.disabled = true; b.textContent = 'Uploading…';
+  try {
+    const u = await fetch(SUPABASE_URL + '/storage/v1/object/payment-proofs/' + path, {
+      method: 'POST',
+      headers: { apikey: ANON_KEY, Authorization: 'Bearer ' + ANON_KEY, 'Content-Type': f.type || 'application/octet-stream' },
+      body: f
+    });
+    if (!u.ok) throw new Error('upload ' + u.status);
+    const d = await rpc('submit_membership_proof', { p_member_no: num, p_surname: sur, p_proof_path: path });
+    if (d && d.ok) {
+      pm.className = 'ok';
+      pm.textContent = d.reason === 'already_verified'
+        ? 'Your payment is already verified. Search again to get your card.'
+        : 'Proof received. An officer will verify it, then your card and certificate are released.';
+      $('proof').value = '';
+    } else {
+      fail('We couldn’t attach the file to your membership. Check your number and surname and try again.');
+    }
+  } catch (err) {
+    fail('The upload failed. Check your connection and try again.');
+  } finally {
+    b.disabled = false; b.textContent = 'Upload proof';
+  }
+});
+
+$('f').addEventListener('submit', async e => {
+  e.preventDefault();
+  const num = $('num').value.trim().toUpperCase();
+  const sur = $('sur').value.trim();
+  const msg = $('msg');
+  msg.textContent = '';
+  $('out').hidden = true;
+  $('pay').hidden = true;
+
+  if (!num || sur.length < 2) {
+    msg.textContent = 'Enter your membership number and your surname.';
+    return;
+  }
+  if (ANON_KEY.startsWith('PASTE_')) {
+    msg.textContent = 'This page is not set up yet: the Supabase key is missing.';
+    return;
+  }
+
+  const btn = $('go');
+  btn.disabled = true;
+  btn.textContent = 'Searching…';
+  try {
+    const d = await rpc('get_member_card', { p_member_no: num, p_surname: sur });
+    if (!d || !d.found) {
+      msg.textContent = 'We couldn’t find that number and surname. Check the number (for example SAMN-BW-015) and type your surname as it appears on your membership.';
+    } else if (!d.eligible) {
+      if (d.payment === 'none' || d.payment === 'pending') {
+        showPay(d.payment);
+      } else {
+        msg.textContent = 'Your membership is not active yet. Please contact your country branch.';
+      }
+    } else {
+      $('cName').textContent = $('eName').textContent = d.full_name;
+      $('cCountry').textContent = d.country || '';
+      $('cNum').textContent = $('eNum').textContent = d.member_number;
+      const yr = d.membership_year ? 'Member for ' + d.membership_year : '';
+      $('cYear').textContent = yr;
+      $('eYear').textContent = yr ? yr + '.' : '';
+      $('eDate').textContent = 'Issued ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      show('card');
+      $('out').hidden = false;
+      $('out').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Keep the existing certificate log; ignore any failure.
+      rpc('get_certificate', { p_member_no: d.member_number, p_surname: sur }).catch(() => {});
+    }
+  } catch (err) {
+    msg.textContent = 'Something went wrong. Check your connection and try again.';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Find my membership';
+  }
+});
+</script>
+</body>
+</html>
