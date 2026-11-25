@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Member area · SAMN</title>
+<style>
+  :root {
+    --navy: #132b4c; --teal: #1f6f6a; --gold: #c8a45d;
+    --bg: #f4f6f9; --card: #ffffff; --ink: #1c2433; --muted: #5d6677;
+    --line: #dfe3ea; --err: #a3200f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --navy: #8fb0ee; --teal: #6fcbc3; --gold: #d9b865;
+      --bg: #0f1522; --card: #172033; --ink: #e8ecf4; --muted: #a2acbf;
+      --line: #2a3550; --err: #ff8a78; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: Inter, "Segoe UI", system-ui, sans-serif; background: var(--bg);
+    color: var(--ink); line-height: 1.55; }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: clamp(1.9rem, 5vw, 2.6rem); color: var(--navy); margin: 0 0 8px; line-height: 1.15; }
+  h2 { font-size: 1.2rem; color: var(--navy); margin: 0 0 12px; }
+  p.lead { color: var(--muted); margin: 0 0 24px; max-width: 60ch; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 24px; margin-bottom: 20px; }
+  label { display: block; font-weight: 600; font-size: .9rem; margin: 14px 0 6px; }
+  input { width: 100%; padding: 12px 14px; font: inherit; color: var(--ink);
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+  input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  button, .btn { display: inline-block; margin-top: 18px; padding: 12px 20px; font: inherit;
+    font-weight: 600; color: #fff; background: #132b4c; border: 0; border-radius: 10px;
+    cursor: pointer; text-decoration: none; }
+  button:disabled { opacity: .6; cursor: wait; }
+  .btn.alt { background: transparent; color: var(--navy); border: 1px solid var(--navy); margin-top: 0; }
+  #msg { color: var(--err); min-height: 1.4em; margin-top: 14px; }
+  .who { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+  .who span { color: var(--muted); }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    padding: 14px 0; border-top: 1px solid var(--line); }
+  .row:first-of-type { border-top: 0; }
+  .row small { display: block; color: var(--muted); }
+  .mine { display: flex; gap: 12px; flex-wrap: wrap; }
+  .note { color: var(--muted); font-size: .88rem; }
+  [hidden] { display: none !important; }
+  .back { margin-bottom: 18px; display: inline-block; color: var(--navy); font-weight: 600; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">Back to main site</a>
+
+  <!-- LOGIN -->
+  <section id="login">
+    <h1>Member area</h1>
+    <p class="lead">Sign in with the membership number issued when your application was approved, and your surname.</p>
+    <div class="card">
+      <form id="form" autocomplete="off" novalidate>
+        <label for="num">Membership number</label>
+        <input id="num" name="num" placeholder="SAMN-BW-001" autocapitalize="characters" required>
+        <label for="sn">Surname</label>
+        <input id="sn" name="sn" required>
+        <button id="go" type="submit">Sign in</button>
+        <p id="msg" role="alert"></p>
+      </form>
+    </div>
+    <p class="note">Not a member yet? <a href="membership.html">Apply for membership</a>.</p>
+  </section>
+
+  <!-- MEMBERS AREA -->
+  <section id="area" hidden>
+    <div class="who">
+      <h1 id="hello">Welcome</h1>
+      <button id="out" class="btn alt" type="button">Sign out</button>
+    </div>
+    <p class="lead" id="meta"></p>
+
+    <div class="card">
+      <h2>My membership</h2>
+      <div class="mine" id="mine"></div>
+    </div>
+
+    <div class="card">
+      <h2>Constitution and presentations</h2>
+      <div id="docs"></div>
+    </div>
+    <p class="note" id="expiry"></p>
+  </section>
+</main>
+
+<script>
+  const FUNCTION_URL = "https://prkjdqokorqiqdnumuoq.supabase.co/functions/v1/member-login";
+
+  const $ = (id) => document.getElementById(id);
+  const form = $("form"), msg = $("msg"), go = $("go");
+
+  function link(href, text, alt) {
+    const a = document.createElement("a");
+    a.className = "btn" + (alt ? " alt" : "");
+    a.href = href; a.target = "_blank"; a.rel = "noopener";
+    a.textContent = text;
+    return a;
+  }
+
+  function render(d) {
+    $("hello").textContent = "Welcome, " + d.member.name;
+    $("meta").textContent = d.member.number + (d.member.country ? " · " + d.member.country : "");
+
+    const mine = $("mine"); mine.replaceChildren();
+    if (d.certificate) mine.append(link(d.certificate, "Download certificate"));
+    if (d.card) mine.append(link(d.card, "Download membership card"));
+    if (!d.certificate && !d.card) {
+      const p = document.createElement("p");
+      p.className = "note";
+      p.textContent = "Your certificate and card are not ready yet. Check back soon or contact your country branch.";
+      mine.append(p);
+    }
+
+    const docs = $("docs"); docs.replaceChildren();
+    if (!d.resources.length) {
+      const p = document.createElement("p"); p.className = "note";
+      p.textContent = "No documents have been published yet."; docs.append(p);
+    }
+    d.resources.forEach((r) => {
+      const row = document.createElement("div"); row.className = "row";
+      const info = document.createElement("div");
+      const t = document.createElement("strong"); t.textContent = r.title;
+      const s = document.createElement("small");
+      s.textContent = [r.category, r.presenter, r.date].filter(Boolean).join(" · ");
+      info.append(t, s);
+      row.append(info, link(r.url, "Open", true));
+      docs.append(row);
+    });
+    $("expiry").textContent = "Download links expire after " + d.expires_in_minutes + " minutes. Sign in again for fresh links.";
+
+    $("login").hidden = true; $("area").hidden = false;
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.textContent = "";
+    go.disabled = true; go.textContent = "Checking…";
+    try {
+      const res = await fetch(FUNCTION_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ membership_number: $("num").value, surname: $("sn").value }),
+      });
+      const data = await res.json();
+      if (!res.ok) { msg.textContent = data.error || "Sign-in failed. Try again."; return; }
+      render(data);
+    } catch (err) {
+      msg.textContent = "Could not reach the server. Check your connection and try again.";
+    } finally {
+      go.disabled = false; go.textContent = "Sign in";
+    }
+  });
+
+  // Sign out clears everything from the page (nothing is stored in the browser)
+  $("out").addEventListener("click", () => {
+    form.reset(); $("docs").replaceChildren(); $("mine").replaceChildren();
+    $("area").hidden = true; $("login").hidden = false; $("num").focus();
+  });
+</script>
+</body>
+</html>
